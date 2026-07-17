@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yony Brondy Mamani Fuentes — Full Stack Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     PARA PERSONALIZAR:
+     1) Busca "TU NOMBRE", "tu@email.com", "github.com/tu-usuario" etc.
+        y reemplázalos por tus datos.
+     2) Cada proyecto está en <section id="proyectos"> — duplica un
+        .project-card para agregar más, o edita el contenido existente.
+     3) La paleta sale de :root — cambia los valores hex si quieres
+        otros colores manteniendo el mismo look.
+     ============================================================ */
+
+  :root{
+    --bg: #0f131b;
+    --bg-elev: #161b26;
+    --bg-panel: #1c2330;
+    --bg-panel-2: #212939;
+    --border: #2a3244;
+    --border-soft: #232b3a;
+    --text: #dfe6f2;
+    --text-dim: #8993a8;
+    --text-dimmer: #5b647a;
+    --cyan: #5eead4;
+    --amber: #f5a524;
+    --purple: #b794f6;
+    --pink: #f472b6;
+    --green: #86efac;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  ::selection{ background:var(--cyan); color:#0f131b; }
+
+  .wrap{ max-width:1140px; margin:0 auto; padding:0 24px; }
+
+  /* subtle background grid texture */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(var(--border-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border-soft) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity:.25;
+    pointer-events:none;
+    z-index:0;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent);
+  }
+
+  /* ---------------- NAV ---------------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(15,19,27,.85);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    height:64px;
+  }
+  .logo{
+    font-family:var(--mono); font-weight:700; font-size:15px;
+    color:var(--text); display:flex; align-items:center; gap:8px;
+  }
+  .logo .dot{ width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); }
+  .navlinks{ display:flex; gap:4px; font-family:var(--mono); font-size:13px; }
+  .navlinks a{
+    color:var(--text-dim); padding:8px 14px; border-radius:6px;
+    transition:.2s;
+  }
+  .navlinks a:hover{ color:var(--cyan); background:var(--bg-panel); }
+  .navlinks .file-ext{ color:var(--text-dimmer); }
+  .nav-cta{
+    font-family:var(--mono); font-size:13px; font-weight:600;
+    background:var(--cyan); color:#0b1016;
+    padding:9px 16px; border-radius:6px;
+    transition:.2s;
+  }
+  .nav-cta:hover{ background:#8ff2e0; transform:translateY(-1px); }
+  .burger{ display:none; }
+
+  /* ---------------- HERO ---------------- */
+  .hero{
+    position:relative; z-index:1;
+    padding:88px 0 64px;
+    display:grid; grid-template-columns:1.1fr .9fr; gap:56px; align-items:center;
+  }
+  .eyebrow{
+    font-family:var(--mono); font-size:13px; color:var(--amber);
+    display:flex; align-items:center; gap:10px; margin-bottom:18px;
+  }
+  .eyebrow::before{ content:"//"; color:var(--text-dimmer); }
+  .hero h1{
+    font-family:var(--mono); font-weight:800;
+    font-size:clamp(34px,4.4vw,52px); line-height:1.1;
+    letter-spacing:-.02em;
+  }
+  .hero h1 .accent{ color:var(--cyan); }
+  .hero p.lead{
+    margin-top:20px; font-size:17px; color:var(--text-dim); max-width:46ch;
+  }
+  .hero-actions{ display:flex; gap:12px; margin-top:32px; flex-wrap:wrap; }
+  .btn{
+    font-family:var(--mono); font-size:14px; font-weight:600;
+    padding:13px 22px; border-radius:8px; display:inline-flex; align-items:center; gap:8px;
+    transition:.2s; border:1px solid transparent;
+  }
+  .btn-primary{ background:var(--cyan); color:#0b1016; }
+  .btn-primary:hover{ background:#8ff2e0; transform:translateY(-2px); }
+  .btn-ghost{ border-color:var(--border); color:var(--text); }
+  .btn-ghost:hover{ border-color:var(--cyan); color:var(--cyan); }
+
+  .stack-row{ display:flex; gap:10px; margin-top:36px; flex-wrap:wrap; }
+  .stack-chip{
+    font-family:var(--mono); font-size:12px; color:var(--text-dim);
+    border:1px solid var(--border); padding:6px 10px; border-radius:6px;
+    background:var(--bg-panel);
+  }
+
+  /* editor window */
+  .editor{
+    background:var(--bg-elev); border:1px solid var(--border);
+    border-radius:12px; overflow:hidden;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.6);
+  }
+  .editor-top{
+    display:flex; align-items:center; gap:8px;
+    padding:12px 14px; border-bottom:1px solid var(--border-soft);
+    background:var(--bg-panel);
+  }
+  .dot-group{ display:flex; gap:6px; margin-right:8px; }
+  .dot-group span{ width:10px; height:10px; border-radius:50%; }
+  .dot-group span:nth-child(1){ background:#f87171; }
+  .dot-group span:nth-child(2){ background:#fbbf24; }
+  .dot-group span:nth-child(3){ background:#4ade80; }
+  .editor-tabs{ display:flex; gap:2px; font-family:var(--mono); font-size:12px; }
+  .editor-tab{
+    padding:6px 12px; border-radius:6px 6px 0 0; color:var(--text-dimmer);
+    cursor:pointer; border:1px solid transparent; border-bottom:none;
+  }
+  .editor-tab.active{ background:var(--bg-elev); color:var(--cyan); border-color:var(--border-soft); }
+  .editor-body{ padding:22px 24px; font-family:var(--mono); font-size:13.5px; min-height:230px; }
+  .editor-body .ln{ color:var(--text-dimmer); display:inline-block; width:22px; user-select:none; }
+  .code-line{ white-space:pre; }
+  .k{ color:var(--purple); }
+  .s{ color:var(--green); }
+  .f{ color:var(--cyan); }
+  .c{ color:var(--text-dimmer); }
+  .p{ color:var(--pink); }
+  #typed-cursor{ display:inline-block; width:8px; background:var(--cyan); animation:blink 1s step-start infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* ---------------- SECTION LABELS ---------------- */
+  section{ position:relative; z-index:1; padding:80px 0; }
+  .section-tag{
+    font-family:var(--mono); font-size:13px; color:var(--text-dimmer);
+    display:flex; align-items:center; gap:10px; margin-bottom:8px;
+  }
+  .section-tag .num{ color:var(--amber); }
+  h2.section-title{
+    font-family:var(--mono); font-weight:700; font-size:clamp(24px,3vw,32px);
+    letter-spacing:-.01em; margin-bottom:36px;
+  }
+  h2.section-title .accent{ color:var(--cyan); }
+
+  /* ---------------- ABOUT ---------------- */
+  .about-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start;
+  }
+  .about-grid p{ color:var(--text-dim); margin-bottom:16px; font-size:15.5px; }
+  .about-grid p strong{ color:var(--text); font-weight:600; }
+  .kv{
+    background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:10px;
+    padding:22px 24px; font-family:var(--mono); font-size:13px;
+  }
+  .kv-row{ display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px dashed var(--border-soft); }
+  .kv-row:last-child{ border-bottom:none; }
+  .kv-row .k1{ color:var(--text-dimmer); }
+  .kv-row .v1{ color:var(--cyan); }
+
+  /* ---------------- SKILLS ---------------- */
+  .skills-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .skill-card{
+    background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:10px; padding:22px;
+    transition:.2s;
+  }
+  .skill-card:hover{ border-color:var(--cyan); transform:translateY(-3px); }
+  .skill-card .icon{ font-size:22px; margin-bottom:12px; }
+  .skill-card h3{ font-family:var(--mono); font-size:14px; color:var(--text); margin-bottom:12px; }
+  .tag-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .tag{
+    font-family:var(--mono); font-size:11.5px; padding:5px 10px; border-radius:5px;
+    background:var(--bg-panel-2); color:var(--text-dim); border:1px solid var(--border-soft);
+  }
+
+  /* ---------------- PROJECTS ---------------- */
+  .projects-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  .project-card{
+    background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:12px;
+    overflow:hidden; display:flex; flex-direction:column; transition:.25s;
+  }
+  .project-card:hover{ border-color:var(--cyan); transform:translateY(-4px); box-shadow:0 20px 40px -20px rgba(94,234,212,.15); }
+  .project-thumb{
+    height:130px; display:flex; align-items:center; justify-content:center;
+    font-size:36px; border-bottom:1px solid var(--border-soft);
+  }
+  .thumb-1{ background:linear-gradient(135deg,#1c2b3a,#16202c); }
+  .thumb-2{ background:linear-gradient(135deg,#2a1c33,#1c1520); }
+  .thumb-3{ background:linear-gradient(135deg,#1c2e24,#141d18); }
+  .project-body{ padding:20px 22px; flex:1; display:flex; flex-direction:column; }
+  .project-body .git{ font-family:var(--mono); font-size:11px; color:var(--text-dimmer); margin-bottom:8px; }
+  .project-body h3{ font-family:var(--mono); font-size:15.5px; margin-bottom:8px; color:var(--text); }
+  .project-body p{ font-size:13.5px; color:var(--text-dim); flex:1; margin-bottom:14px; }
+  .project-links{ display:flex; gap:14px; font-family:var(--mono); font-size:12px; }
+  .project-links a{ color:var(--cyan); }
+  .project-links a:hover{ text-decoration:underline; }
+
+  /* ---------------- PROCESS / TIPS ---------------- */
+  .process-note{
+    background:var(--bg-elev); border:1px solid var(--border-soft); border-left:3px solid var(--amber);
+    border-radius:0 10px 10px 0; padding:20px 22px; margin-bottom:14px;
+  }
+  .process-note .comment{ font-family:var(--mono); font-size:12px; color:var(--text-dimmer); margin-bottom:6px; }
+  .process-note h4{ font-family:var(--mono); font-size:14.5px; color:var(--text); margin-bottom:6px; }
+  .process-note p{ font-size:13.5px; color:var(--text-dim); }
+  .process-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+
+  /* ---------------- CONTACT ---------------- */
+  .contact-panel{
+    background:var(--bg-elev); border:1px solid var(--border-soft); border-radius:14px;
+    padding:48px; text-align:center;
+  }
+  .contact-panel .prompt{
+    font-family:var(--mono); font-size:13px; color:var(--text-dimmer); margin-bottom:18px;
+  }
+  .contact-panel h2{
+    font-family:var(--mono); font-weight:700; font-size:clamp(24px,3.4vw,34px); margin-bottom:14px;
+  }
+  .contact-panel p{ color:var(--text-dim); max-width:50ch; margin:0 auto 28px; }
+  .contact-links{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+
+  footer{
+    text-align:center; padding:32px 0; font-family:var(--mono); font-size:12px; color:var(--text-dimmer);
+    border-top:1px solid var(--border-soft);
+  }
+
+  /* ---------------- RESPONSIVE ---------------- */
+  @media (max-width:860px){
+    .navlinks{ display:none; }
+    .hero{ grid-template-columns:1fr; padding-top:56px; }
+    .about-grid{ grid-template-columns:1fr; }
+    .skills-grid{ grid-template-columns:1fr 1fr; }
+    .projects-grid{ grid-template-columns:1fr; }
+    .process-grid{ grid-template-columns:1fr; }
+    .contact-panel{ padding:32px 22px; }
+  }
+  @media (max-width:520px){
+    .skills-grid{ grid-template-columns:1fr; }
+    .hero-actions{ flex-direction:column; align-items:stretch; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    #typed-cursor{ animation:none; }
+    *{ transition:none !important; }
+  }
+  /* ---------------- LIGHTBOX ---------------- */
+  .lightbox{
+    position:fixed; inset:0; z-index:100;
+    background:rgba(10,13,20,.92);
+    display:none; align-items:center; justify-content:center;
+    padding:40px;
+  }
+  .lightbox.active{ display:flex; }
+  .lightbox-content{
+    position:relative; max-width:900px; width:100%;
+  }
+  .lightbox-img{
+    width:100%; max-height:80vh; object-fit:contain;
+    border-radius:10px; border:1px solid var(--border);
+    display:block;
+  }
+  .lightbox-close{
+    position:absolute; top:-44px; right:0;
+    font-family:var(--mono); font-size:14px; color:var(--text-dim);
+    background:var(--bg-panel); border:1px solid var(--border);
+    width:36px; height:36px; border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:.2s;
+  }
+  .lightbox-close:hover{ color:var(--cyan); border-color:var(--cyan); }
+  .lightbox-nav{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:44px; height:44px; border-radius:50%;
+    background:var(--bg-panel); border:1px solid var(--border);
+    color:var(--text); font-size:18px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:.2s;
+  }
+  .lightbox-nav:hover{ border-color:var(--cyan); color:var(--cyan); }
+  .lightbox-prev{ left:-56px; }
+  .lightbox-next{ right:-56px; }
+  .lightbox-caption{
+    font-family:var(--mono); font-size:12px; color:var(--text-dimmer);
+    text-align:center; margin-top:14px;
+  }
+  @media (max-width:760px){
+    .lightbox-nav{ width:38px; height:38px; }
+    .lightbox-prev{ left:6px; }
+    .lightbox-next{ right:6px; }
+    .lightbox{ padding:16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="logo"><span class="dot"></span>devbrondy<span style="color:var(--text-dimmer)">.com</span></div>
+    <nav class="navlinks">
+      <a href="#inicio">inicio<span class="file-ext"></span></a>
+      <a href="#sobre-mi">sobre-mi<span class="file-ext">.md</span></a>
+      <a href="#habilidades">habilidades<span class="file-ext">.json</span></a>
+      <a href="#proyectos">proyectos<span class="file-ext">/</span></a>
+      <a href="#contacto">contacto<span class="file-ext">.sh</span></a>
+    </nav>
+    <a href="#contacto" class="nav-cta">$ hablemos</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section id="inicio" class="wrap hero">
+    <div>
+      <div class="eyebrow">disponible para nuevas oportunidades</div>
+      <h1>Hola, soy <span class="accent">Yony Brondy Mamani Fuentes</span><br>Full Stack Developer</h1>
+      <p class="lead">Más de 10 años desarrollando sistemas de gestión y ERP a medida con PHP (Laravel, CodeIgniter) y MySQL. Especializado en la lógica de negocio, estructura de datos y procesos internos de empresas. Ahora busco un nuevo reto profesional.</p>
+      <div class="hero-actions">
+        <a href="#proyectos" class="btn btn-primary">Ver proyectos →</a>
+        <a href="#contacto" class="btn btn-ghost">Contactar</a>
+      </div>
+      <div class="stack-row">
+        <span class="stack-chip">PHP</span>
+        <span class="stack-chip">Laravel</span>
+        <span class="stack-chip">CodeIgniter</span>
+        <span class="stack-chip">MySQL</span>
+        <span class="stack-chip">Node.js</span>
+        <span class="stack-chip">JavaScript</span>
+        <span class="stack-chip">React</span>
+        <span class="stack-chip">Vue</span>
+        <span class="stack-chip">HTML5</span>
+        <span class="stack-chip">CSS3</span>
+      </div>
+    </div>
+
+    <div class="editor">
+      <div class="editor-top">
+        <div class="dot-group"><span></span><span></span><span></span></div>
+        <div class="editor-tabs">
+          <div class="editor-tab active">perfil.js</div>
+          <div class="editor-tab">README.md</div>
+        </div>
+      </div>
+      <div class="editor-body">
+        <div class="code-line"><span class="ln">1</span><span class="k">const</span> <span class="f">desarrollador</span> = {</div>
+        <div class="code-line"><span class="ln">2</span>&nbsp;&nbsp;nombre: <span class="s">"Yony Brondy Mamani Fuentes"</span>,</div>
+        <div class="code-line"><span class="ln">3</span>&nbsp;&nbsp;rol: <span class="s">"Backend Developer"</span>,</div>
+        <div class="code-line"><span class="ln">4</span>&nbsp;&nbsp;experiencia: <span class="s">"10+ años"</span>,</div>
+        <div class="code-line"><span class="ln">5</span>&nbsp;&nbsp;especialidad: <span class="s">"Sistemas de gestión / ERP"</span>,</div>
+        <div class="code-line"><span class="ln">6</span>&nbsp;&nbsp;stack: [<span class="s">"PHP"</span>, <span class="s">"Laravel"</span>, <span class="s">"CodeIgniter"</span>, <span class="s">"MySQL"</span>],</div>
+        <div class="code-line"><span class="ln">7</span>&nbsp;&nbsp;ubicacion: <span class="s">"Perú"</span>,</div>
+        <div class="code-line"><span class="ln">8</span>&nbsp;&nbsp;buscando: <span class="s">"nuevo reto profesional"</span>,</div>
+        <div class="code-line"><span class="ln">9</span>&nbsp;&nbsp;disponible: <span class="p">true</span>,</div>
+        <div class="code-line"><span class="ln">10</span>};</div>
+        <div class="code-line"><span class="ln">11</span></div>
+        <div class="code-line"><span class="ln">12</span><span class="c">//</span><span id="typed-out"></span><span id="typed-cursor">&nbsp;</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE MI -->
+  <section id="sobre-mi" class="wrap">
+    <div class="section-tag"><span class="num">01</span> sobre-mi.md</div>
+    <h2 class="section-title">¿Quién soy y <span class="accent">qué busco</span>?</h2>
+    <div class="about-grid">
+      <div>
+        <div>
+          <p>Soy desarrollador <strong>Full Stack</strong> con más de <strong>10 años de experiencia</strong> construyendo sistemas de gestión y ERP a medida con PHP, Laravel y CodeIgniter. He trabajado a fondo en lógica de negocio, bases de datos relacionales y procesos internos de empresas.</p>
+          <p>Durante estos años me especialicé resolviendo problemas concretos de gestión empresarial: control de inventarios, procesos administrativos, reportes y flujos internos. Eso me dio un conocimiento profundo de cómo estructurar sistemas que la gente realmente usa día a día.</p>
+          <p>Ahora busco <strong>un nuevo reto profesional</strong> — un entorno donde pueda aplicar esa experiencia a proyectos distintos, seguir creciendo técnicamente y aportar desde el primer día.</p>
+        </div>
+      </div>
+      <div class="kv">
+        <div class="kv">
+          <div class="kv-row"><span class="k1">objetivo</span><span class="v1">nuevo_reto</span></div>
+          <div class="kv-row"><span class="k1">experiencia</span><span class="v1">10+ años</span></div>
+          <div class="kv-row"><span class="k1">especialidad</span><span class="v1">ERP / gestión</span></div>
+          <div class="kv-row"><span class="k1">modalidad</span><span class="v1">remoto / híbrido</span></div>
+          <div class="kv-row"><span class="k1">estado</span><span class="v1">disponible ✓</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HABILIDADES -->
+  <section id="habilidades" class="wrap">
+    <div class="section-tag"><span class="num">02</span> habilidades.json</div>
+    <h2 class="section-title">Tecnologías con las que <span class="accent">trabajo</span></h2>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="icon">⚙️</div>
+        <h3>Backend</h3>
+        <div class="tag-row">
+          <span class="tag">PHP</span><span class="tag">Laravel</span><span class="tag">CodeIgniter</span>
+          <span class="tag">REST APIs</span><span class="tag">Node.js</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">🗄️</div>
+        <h3>Bases de datos</h3>
+        <div class="tag-row">
+          <span class="tag">MySQL</span><span class="tag">PostgreSQL</span><span class="tag">Modelado de datos</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">🏢</div>
+        <h3>Sistemas de gestión</h3>
+        <div class="tag-row">
+          <span class="tag">ERP</span><span class="tag">Inventarios</span><span class="tag">Reportes</span>
+          <span class="tag">Procesos internos</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">🎨</div>
+        <h3>Frontend</h3>
+        <div class="tag-row">
+          <span class="tag">React</span><span class="tag">Vue</span><span class="tag">HTML5</span><span class="tag">CSS3</span><span class="tag">JavaScript</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">🛠️</div>
+        <h3>Herramientas</h3>
+        <div class="tag-row">
+          <span class="tag">Git</span><span class="tag">GitHub</span><span class="tag">Postman</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">🤝</div>
+        <h3>Blandas</h3>
+        <div class="tag-row">
+          <span class="tag">Análisis de procesos</span><span class="tag">Trabajo en equipo</span><span class="tag">Autonomía</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROYECTOS -->
+  <section id="proyectos" class="wrap">
+    <div class="section-tag"><span class="num">03</span> proyectos/</div>
+    <h2 class="section-title">Proyectos <span class="accent">destacados</span></h2>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-thumb thumb-1" style="padding:0; overflow:hidden; cursor:pointer;"
+            onclick="openLightbox(['img/solares-login.jpg','img/solares-dashboard.jpg'], 0)">
+          <img src="img/solares-dashboard.jpg" alt="Dashboard del sistema de venta de solares"
+              style="width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div class="project-body">
+          <div class="git">$ sistema-venta-solares</div>
+          <h3>Sistema de Venta de Solares</h3>
+          <p>Plataforma administrativa para la gestión completa de ventas de terrenos: catálogo de proyectos y solares, clientes, vendedores, cobros, pagos a vendedores, traspasos y documentos. Incluye dashboard con reportes de ingresos y distribución de ventas por proyecto.</p>
+          <div class="tag-row" style="margin-bottom:14px">
+            <span class="tag">PHP</span><span class="tag">CodeIgniter</span><span class="tag">MySQL</span>
+          </div>
+          <div class="project-links">
+            <a href="javascript:void(0)" onclick="openLightbox(['img/solares-login.jpg','img/solares-dashboard.jpg'], 0)">↗ Ver capturas</a>
+            <span style="color:var(--text-dimmer)">· Demo bajo solicitud</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-thumb thumb-2" style="padding:0; overflow:hidden; cursor:pointer;"
+            onclick="openLightbox(['img/daker-login.jpg','img/daker-oportunidades.jpg'], 0)">
+          <img src="img/daker-oportunidades.jpg" alt="Módulo comercial del ERP Daker S.A.C."
+              style="width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div class="project-body">
+          <div class="git">$ erp-daker-sac</div>
+          <h3>ERP Daker S.A.C.</h3>
+          <p>Sistema de gestión empresarial para una empresa de ingeniería y construcción, con módulos de ventas de materiales y servicios: comercial (oportunidades y cuentas), logística, almacén, contabilidad, administración, producción y reportes.</p>
+          <div class="tag-row" style="margin-bottom:14px">
+            <span class="tag">PHP</span><span class="tag">Laravel</span><span class="tag">MySQL</span>
+          </div>
+          <div class="project-links">
+            <a href="javascript:void(0)" onclick="openLightbox(['img/daker-login.jpg','img/daker-oportunidades.jpg'], 0)">↗ Ver capturas</a>
+            <span style="color:var(--text-dimmer)">· Demo bajo solicitud</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-thumb thumb-3" style="padding:0; overflow:hidden; cursor:pointer;"
+            onclick="openLightbox(['img/sisven-login.jpg','img/sisven-dashboard.jpg'], 0)">
+          <img src="img/sisven-dashboard.jpg" alt="Dashboard del sistema de ventas SISVEN"
+              style="width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div class="project-body">
+          <div class="git">$ sisven-multi-negocio</div>
+          <h3>SISVEN — Sistema de Ventas</h3>
+          <p>Sistema de ventas multi-negocio para 2 empresas distintas desde una sola plataforma: clientes, productos, caja, cuentas por cobrar, contabilidad, nómina y reportes con gráficos de ventas mensuales.</p>
+          <div class="tag-row" style="margin-bottom:14px">
+            <span class="tag">PHP</span><span class="tag">MySQL</span><span class="tag">Bootstrap</span>
+          </div>
+          <div class="project-links">
+            <a href="javascript:void(0)" onclick="openLightbox(['img/sisven-login.jpg','img/sisven-dashboard.jpg'], 0)">↗ Ver capturas</a>
+            <span style="color:var(--text-dimmer)">· Demo bajo solicitud</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROCESO / TIPS -->
+  <section id="proceso" class="wrap">
+    <div class="section-tag"><span class="num">04</span> notas.txt</div>
+    <h2 class="section-title">Cómo <span class="accent">trabajo</span></h2>
+    <div class="process-grid">
+      <div class="process-note">
+        <div class="comment">// el problema</div>
+        <h4>Entender el proceso de negocio primero</h4>
+        <p>Antes de programar, entiendo cómo funciona el proceso real de la empresa: quién usa el sistema, qué reglas de negocio aplican y qué reportes necesita.</p>
+      </div>
+      <div class="process-note">
+        <div class="comment">// la solución</div>
+        <h4>Iterar con calidad sobre cantidad</h4>
+        <p>Prefiero pocos proyectos bien terminados a muchos a medias. Cuido detalles, responsive y accesibilidad.</p>
+      </div>
+      <div class="process-note">
+        <div class="comment">// lo aprendido</div>
+        <h4>Documentar el proceso</h4>
+        <p>Cada proyecto tiene un README explicando decisiones técnicas, retos y qué aprendí construyéndolo.</p>
+      </div>
+      <div class="process-note">
+        <div class="comment">// siguiente paso</div>
+        <h4>Mejora continua</h4>
+        <p>Actualizo este portafolio con nuevos proyectos y mejoras constantemente, nunca está "terminado".</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto" class="wrap">
+    <div class="contact-panel">
+      <div class="prompt">$ curl -X POST /contacto</div>
+      <h2>Construyamos algo <span style="color:var(--cyan)">juntos</span></h2>
+      <p>Cuento con más de 10 años de experiencia desarrollando sistemas de gestión y ERP con PHP. Estoy buscando un nuevo reto profesional donde pueda seguir aportando esa experiencia. Si mi perfil encaja con lo que necesitas, escríbeme.</p>
+      <div class="contact-links">
+        <a href="mailto:yonybrondy17@gmail.com" class="btn btn-primary">✉ yonybrondy17@gmail.com</a>
+        <a href="https://github.com/yonybrondy1790" class="btn btn-ghost">GitHub</a>
+        <a href="https://www.linkedin.com/in/yony-brondy-mamani-fuentes-23101895/" class="btn btn-ghost">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 Yony Brondy Mamani Fuentes — hecho con código y café ☕
+</footer>
+
+<script>
+  // Efecto de escritura en el hero
+  const text = " listo para aportar valor desde el día uno";
+  const el = document.getElementById('typed-out');
+  let i = 0;
+  function type(){
+    if(i < text.length){
+      el.textContent += text.charAt(i);
+      i++;
+      setTimeout(type, 45);
+    }
+  }
+  window.addEventListener('load', () => setTimeout(type, 600));
+
+  // Tabs del editor (decorativo, alterna contenido simple)
+  const tabs = document.querySelectorAll('.editor-tab');
+  const body = document.querySelector('.editor-body');
+  const readme = `<div class="code-line"><span class="ln">1</span><span class="c"># Tu Nombre</span></div>
+<div class="code-line"><span class="ln">2</span></div>
+<div class="code-line"><span class="ln">3</span>Full Stack Developer construyendo</div>
+<div class="code-line"><span class="ln">4</span>productos web completos.</div>
+<div class="code-line"><span class="ln">5</span></div>
+<div class="code-line"><span class="ln">6</span><span class="c">## Stack</span></div>
+<div class="code-line"><span class="ln">7</span>PHP · Laravel · CodeIgniter · MySQL · Node.js · JavaScript · React · Vue</div>
+<div class="code-line"><span class="ln">8</span></div>
+<div class="code-line"><span class="ln">9</span><span class="c">## Contacto</span></div>
+<div class="code-line"><span class="ln">10</span>yonybrondy17@gmail.com</div>`;
+  const original = body.innerHTML;
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      body.innerHTML = tab.textContent.includes('README') ? readme : original;
+    });
+  });
+  // Lightbox de proyectos
+  let lightboxImages = [];
+  let lightboxIndex = 0;
+
+  function openLightbox(images, index){
+    lightboxImages = images;
+    lightboxIndex = index;
+    updateLightbox();
+    document.getElementById('lightbox').classList.add('active');
+  }
+  function closeLightbox(){
+    document.getElementById('lightbox').classList.remove('active');
+  }
+  function lightboxNav(dir){
+    lightboxIndex = (lightboxIndex + dir + lightboxImages.length) % lightboxImages.length;
+    updateLightbox();
+  }
+  function updateLightbox(){
+    document.getElementById('lightbox-img').src = lightboxImages[lightboxIndex];
+    document.getElementById('lightbox-caption').textContent =
+      (lightboxIndex + 1) + ' / ' + lightboxImages.length;
+  }
+  document.addEventListener('keydown', (e) => {
+    if(!document.getElementById('lightbox').classList.contains('active')) return;
+    if(e.key === 'Escape') closeLightbox();
+    if(e.key === 'ArrowRight') lightboxNav(1);
+    if(e.key === 'ArrowLeft') lightboxNav(-1);
+  });
+</script>
+<div class="lightbox" id="lightbox" onclick="if(event.target===this) closeLightbox()">
+  <div class="lightbox-content">
+    <div class="lightbox-close" onclick="closeLightbox()">✕</div>
+    <div class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)">‹</div>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="Captura del proyecto">
+    <div class="lightbox-nav lightbox-next" onclick="lightboxNav(1)">›</div>
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+</div>
+</body>
+</html>
